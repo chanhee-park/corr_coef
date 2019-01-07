@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 수식 참고
+    // https://medium.com/@fiv3star/%EC%9C%A0%EC%82%AC%EB%8F%84-%EA%B5%AC%ED%95%98%EA%B8%B0-%ED%94%BC%EC%96%B4%EC%8A%A8-%EC%83%81%EA%B4%80%EA%B3%84%EC%88%98-4fe7d6256e22
+
+    function corrcoef(arr1, arr2) {
+//        console.log(":");
+        if (arr2 === undefined) {
+            return corrcoef_matrix(arr1);
+        }
+//        console.log("두 배열의 피어슨 상관계수를 구합니다.");
+//        console.log("배열 1:", arr1);
+//        console.log("배열 2:", arr2);
+
+        var len = arr1.length;
+        try {
+            // 예외처리 : 배열길이 0, 배열길이 다름
+            if (len <= 0) throw "First array is empty.";
+            if (len !== arr2.length) throw "Lengths of 2 array is different.";
+        }
+        catch (err) {
+            console.log(err);
+            return err;
+        }
+
+        var sum1 = 0;
+        var sum2 = 0;
+        var squaredSum1 = 0;
+        var squaredSum2 = 0;
+        var multipliedSum = 0;
+
+        for (var i = 0; i < len; i++) {
+            sum1 = sum1 + arr1[i];
+            sum2 = sum2 + arr2[i];
+            squaredSum1 = squaredSum1 + Math.pow(arr1[i], 2);
+            squaredSum2 = squaredSum2 + Math.pow(arr2[i], 2);
+            multipliedSum = multipliedSum + (arr1[i] * arr2[i]);
+        }
+
+        var molecule = len * multipliedSum - (sum1 * sum2);
+        var denominator = Math.sqrt(
+            Math.abs(len * squaredSum1 - Math.pow(sum1, 2)) *
+            Math.abs(len * squaredSum2 - Math.pow(sum2, 2)));
+
+        return molecule / denominator;
+    }
+
+    function corrcoef_matrix(matrix) {
+//        console.log("한 행렬의 피어슨 상관계수를 구합니다.");
+        var numOfArr = matrix.length;
+        try {
+            // 예외처리 : 배열의 수 1개 이하
+            if (numOfArr <= 1 || !Array.isArray(matrix[0])) throw "Input must be 2 array or 2d Array";
+        }
+        catch (err) {
+            console.log(err);
+            return err;
+        }
+
+        var ret = [];
+        for (var i = 0; i < numOfArr; i++) {
+            ret.push([]);
+            var baseArr = matrix[i];
+            for (var j = 0; j < numOfArr; j++) {
+                var otherArr = matrix[j];
+                ret[i].push(corrcoef(baseArr, otherArr));
+            }
+        }
+
+        return ret;
+    }
+
+
+    function test() {
+        var ret = corrcoef([1, 2, 5, 4], [2, 4, 8, 16]);
+        console.log(ret);
+
+        ret = corrcoef([1, 2, 3, 4], [4, 3, 2, 1]);
+        console.log(ret);
+
+        ret = corrcoef([1, 2, 3, 5, 5], [4, 3, 2, 1]);
+        console.log(ret);
+
+        ret = corrcoef([], [4, 3, 2, 1]);
+        console.log(ret);
+
+        ret = corrcoef(
+            [4, 3, 2, 1]
+        );
+        console.log(ret);
+
+        var ret = corrcoef(
+            [[4, 3, 2, 1],
+                [1, 2, 3, 4],
+                [1, 3, 9, 12],
+                [12, 9, 3, 1]
+            ]
+        );
+        console.log(ret);
+
+    }
+
+    test();
+
+</script>
+</html>
